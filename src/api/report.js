@@ -1,9 +1,9 @@
 import ApiClient from './apiClient';
 
 export function getAllReports() {
-    return ApiClient.get('/camel/report');
+    return ApiClient.get('/report');
 }
 
 export function getReportById(id) {
-    return ApiClient.get(`/camel/report/${id}`);
+    return ApiClient.get(`/report/${id}`);
 }
