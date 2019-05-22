@@ -1,6 +1,5 @@
 import './UploadFiles.scss';
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -29,10 +28,24 @@ import {
     uploadProgress,
     uploadClear
 } from '../../actions/UploadActions';
+import { GlobalProps } from '../../models/GlobalProps';
+import { GlobalState } from '../../models/GlobalState';
+import { Upload } from '../../models/Upload';
 
-class UploadFiles extends Component {
+interface Props extends GlobalProps {
+    uploadProgress: Function;
+    uploadRequest: Function;
+    uploadClear: Function;
+    uploads: Upload[];
+};
 
-    constructor(props) {
+interface State {
+    customerId: string;
+};
+
+class UploadFiles extends Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
         this.onDrop = this.onDrop.bind(this);
         this.clearUploads();
@@ -42,17 +55,17 @@ class UploadFiles extends Component {
         };
     }
 
-    onDrop(files) {
+    onDrop(files: File[]) {
         this.startUpload(files);
     };
 
-    startUpload(files) {
+    startUpload(files: File[]) {
         files.forEach((file) => {
             const config = {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                onUploadProgress: progressEvent => {
+                onUploadProgress: (progressEvent: any) => {
                     const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
                     this.props.uploadProgress(file, progress);
                 }
@@ -71,7 +84,7 @@ class UploadFiles extends Component {
         const showDropZone = this.props.uploads.length === 0;
         const uploading = this.props.uploads.some((element) => element.success === null);
 
-        const dropzoneRef = createRef();
+        const dropzoneRef: any = createRef();
         const openDialog = () => {
             if (dropzoneRef.current) {
                 dropzoneRef.current.open();
@@ -97,7 +110,7 @@ class UploadFiles extends Component {
                                         { ({ getRootProps, getInputProps }) => {
                                             return (
                                                 <div className="container">
-                                                    <div tabIndex="1" { ...getRootProps({ className: 'dropzone' }) }>
+                                                    <div { ...getRootProps({ className: 'dropzone' }) }>
                                                         <input { ...getInputProps() } />
                                                         <FolderOpenIcon className="pf-c-title pf-m-4xl" />
                                                         <p className="pf-c-title pf-m-3xl">Drag a file here</p>
@@ -136,7 +149,7 @@ class UploadFiles extends Component {
                                     {
                                         this.props.uploads.map((upload) => {
                                             return (
-                                                <StackItem key={ upload.file.name }>
+                                                <StackItem isMain key={ upload.file.name }>
                                                     <Progress
                                                         value={ upload.progress }
                                                         title={ upload.error
@@ -144,7 +157,7 @@ class UploadFiles extends Component {
                                                             : `Uploading: ${upload.file.name}` }
                                                         variant={ upload.error
                                                             ? ProgressVariant.danger
-                                                            : ProgressVariant.primary } />
+                                                            : ProgressVariant.info } />
                                                 </StackItem>
                                             );
                                         })
@@ -154,12 +167,8 @@ class UploadFiles extends Component {
                     </CardBody>
                     <CardFooter>
                         { (showDropZone || uploading) ?
-                            <Link to="/reports">
-                                <Button variant="tertiary">Cancel</Button>
-                            </Link> :
-                            <Link to="/reports">
-                                <Button variant="primary">Next</Button>
-                            </Link>
+                            <Button variant="tertiary" component={ Link } to="/reports">Cancel</Button> :
+                            <Button variant="primary" component={ Link } to="/reports">Next</Button>
                         }
                     </CardFooter>
                 </Card>
@@ -168,18 +177,15 @@ class UploadFiles extends Component {
     }
 }
 
-UploadFiles.propTypes = {
-    uploadRequest: PropTypes.func.isRequired,
-    uploadProgress: PropTypes.func.isRequired,
-    uploadClear: PropTypes.func.isRequired,
-    uploads: PropTypes.array.isRequired
+const mapStateToProps = (state: GlobalState)  => {
+    let { uploads: { uploads }} = state;
+
+    return {
+        uploads
+    };
 };
 
-const mapStateToProps = ({ uploads: { uploads }}) => ({
-    uploads
-});
-
-const mapDispatchToProps = (dispatch) =>
+const mapDispatchToProps = (dispatch: any) =>
     bindActionCreators({
         uploadRequest,
         uploadProgress,

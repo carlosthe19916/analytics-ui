@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link, Redirect, withRouter } from 'react-router-dom';
@@ -10,16 +9,29 @@ import {
 } from '@patternfly/react-core';
 import {
     Spinner
-} from '@red-hat-insights/insights-frontend-components';
+} from '@redhat-cloud-services/frontend-components';
 import { ReportListPage } from '../../PresentationalComponents/ReportListPage/ReportListPage';
 import LoadingState from '../../PresentationalComponents/LoadingState/LoadingState';
 import { fetchReport } from '../../actions/ReportActions';
 import { formatValue } from '../../Utilities/formatValue';
 import '@patternfly/patternfly/patternfly-addons.css';
+import { GlobalProps } from '../../models/GlobalProps';
+import { Report } from '../../models/Report';
+import { GlobalState } from '../../models/GlobalState';
 
-class ReportView extends React.Component {
+interface Props extends GlobalProps {
+    match: any;
+    report: Report;
+    loading: boolean;
+    fetchReport: Function;
+};
 
-    constructor(props) {
+interface State {
+};
+
+class ReportView extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
         this.state = {
             id: props.match.params.id,
@@ -69,7 +81,7 @@ class ReportView extends React.Component {
                                         <dt>Creation date:</dt>
                                         <dd>{ new Date(report.creationDate).toString() }</dd>
                                     </dl>
-                                    <Button variant="secondary" component={ Link } to="/reports">Back</Button>
+                                    <Button variant="secondary" component= { Link } to="/reports">Back</Button>
                                 </div>
                                     : ''
                             }
@@ -81,14 +93,7 @@ class ReportView extends React.Component {
     }
 }
 
-ReportView.propTypes = {
-    match: PropTypes.object,
-    report: PropTypes.object,
-    loading: PropTypes.bool,
-    fetchReport: PropTypes.func.isRequired
-};
-
-const mapStateToProps = (state)  => {
+const mapStateToProps = (state: GlobalState)  => {
     let { report, loading } = state.reports;
 
     return {
@@ -97,7 +102,7 @@ const mapStateToProps = (state)  => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
     return bindActionCreators({
         fetchReport
     }, dispatch);
