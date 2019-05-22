@@ -19,13 +19,13 @@ import { GlobalProps } from './models/GlobalProps';
  *
  */
 const DashboardPage = asyncComponent(() =>
-    import(/* webpackChunkName: "SamplePage" */ './PresentationalComponents/DashboardPage/DashboardPage'));
+    import(/* webpackChunkName: "DashboardPage" */ './PresentationalComponents/DashboardPage/DashboardPage'));
 const UploadFiles = asyncComponent(() =>
-    import(/* webpackChunkName: "SamplePage" */ './SmartComponents/UploadFiles/UploadFiles'));
+    import(/* webpackChunkName: "UploadFiles" */ './SmartComponents/UploadFiles/UploadFiles'));
 const ReportList = asyncComponent(() =>
-    import(/* webpackChunkName: "Rules" */ './SmartComponents/ReportList/ReportList'));
+    import(/* webpackChunkName: "ReportList" */ './SmartComponents/ReportList/ReportList'));
 const ReportView = asyncComponent(() =>
-    import(/* webpackChunkName: "Rules" */ './SmartComponents/ReportView/ReportView'));
+    import(/* webpackChunkName: "ReportView" */ './SmartComponents/ReportView/ReportView'));
 
 const paths = {
     dashboard: '/dashboard',
